@@ -1,0 +1,210 @@
+create or replace
+PROCEDURE       "MWH_SELECTMAIN" 
+/************************************************************************************************************
+Author         : P.Santhosh Raj 
+Company        : IGate.
+Description    : To select the details in the MWH_Main table.
+Created Date   : 9-Jun-2011
+UpdateID    Updated By    Updated Date     Updated Reason 
+1           V.Kishore     10-Jun-2010       added shiftID to select statement
+2           Priyanka Goyal 19-Aug-2015      added new filter condition    
+************************************************************************************************************/
+(   
+  i_MID          IN VARCHAR2, 
+  i_SHIFTID      IN VARCHAR2, 
+  i_MDATE        IN DATE,
+  i_ENGINEER     IN VARCHAR2, 
+  i_ISSFTHNDOVER IN VARCHAR2,
+  i_TODATE       IN DATE ,
+  i_Text         IN VARCHAR2,
+  o_MAIN         OUT SYS_REFCURSOR,
+  O_EXPORTTOEXCEL OUT SYS_REFCURSOR
+)
+AS 
+ I_COUNT NUMBER;
+ FromDateFlag Char(1) := 'N';
+BEGIN 
+  IF  (i_MDATE Is Not Null AND i_TODATE Is Null) Then
+          FromDateFlag :='Y';
+          Else
+          FromDateFlag :='N';
+      END IF ;
+
+IF i_Text is not null or i_Text <>'' THEN
+   
+   
+   INSERT INTO  MWH_TEMP_DESCRIPTION
+   SELECT INN1.MID,
+   SUBSTR(INN1.DESCRIPTION, 1, 50) DESCRIPTION   
+   FROM  
+      (SELECT INN.MID,INN.DESCRIPTION,
+       ROW_NUMBER() OVER(PARTITION BY INN.MID
+       ORDER BY INN.MID DESC) NUM
+       from (
+            SELECT SPECHNDITEM.MID, CASE  
+            WHEN (TRIM(REGEXP_REPLACE(LOWER(SPECHNDITEM.DESCRIPTION),'[[:space:]]*',''))  LIKE '%' 
+            || TRIM(REGEXP_REPLACE(LOWER(i_Text),'[[:space:]]*','')) || '%') 
+            THEN SPECHNDITEM.DESCRIPTION
+            ELSE 
+            SPECHNDITEM.ACTION
+            END DESCRIPTION 
+            FROM MWH_SPECHNDITEMS SPECHNDITEM
+            WHERE 
+            ((TRIM(REGEXP_REPLACE(LOWER(SPECHNDITEM.ACTION),'[[:space:]]*',''))  LIKE '%' || TRIM(REGEXP_REPLACE(LOWER(i_Text),'[[:space:]]*','')) || '%') OR 
+            (TRIM(REGEXP_REPLACE(LOWER(SPECHNDITEM.DESCRIPTION),'[[:space:]]*',''))  LIKE '%' || TRIM(REGEXP_REPLACE(LOWER(i_Text),'[[:space:]]*','')) || '%')))INN) 
+    INN1  WHERE INN1.NUM=1 ;
+    
+    
+    SELECT COUNT(1) INTO I_COUNT 
+    FROM MWH_TEMP_DESCRIPTION ;
+    /*dbms_output.put_line(I_COUNT);*/
+
+    IF I_COUNT = 0  THEN
+    /*dbms_output.put_line('CAM');*/
+
+    INSERT INTO  MWH_TEMP_DESCRIPTION
+    SELECT MWH.MID, 
+    SUBSTR(MWH.CAM_REPORTABLE_ISSUES, 1, 50) DESCRIPTION  
+    FROM  MWH_MAIN MWH
+    WHERE
+    (
+    (TRIM(REGEXP_REPLACE(LOWER(MWH.CAM_REPORTABLE_ISSUES),'[[:space:]]*','')) LIKE '%' || TRIM(REGEXP_REPLACE(LOWER(i_Text),'[[:space:]]*','')) || '%')
+     );
+           
+   END IF;
+   
+  
+    
+  ELSE
+  
+
+   INSERT INTO  MWH_TEMP_DESCRIPTION
+    SELECT SPECHNDITEM.MID,
+    SUBSTR(SPECHNDITEM.DESCRIPTION, 1, 50) DESCRIPTION
+    
+   FROM
+   (SELECT SPC.MID,SPC.DESCRIPTION, 
+   ROW_NUMBER() OVER(PARTITION BY SPC.MID ORDER BY SPC.MID DESC) NUM
+   FROM MWH_SPECHNDITEMS SPC) SPECHNDITEM
+   WHERE SPECHNDITEM.NUM=1  
+   ORDER BY MID DESC;
+   
+END IF;
+      
+     OPEN o_MAIN  FOR
+     SELECT DISTINCT TBL.*,TBR.* FROM 
+     (SELECT 
+      DISTINCT MWH.MID, 
+      TO_CHAR(MWH.MDATE, 'DD/MM/YYYY') as "Date",
+      SFT.Name as "Shift",
+      USR.username as "Engineer",
+      CASE WHEN MWH.ISSFTHNDOVER='1' THEN 'True' ELSE 'False'END AS "Shift Handover",
+      ISHNDVIEW,MWH.issfthndover--,ROLES.ROLE_ID
+     
+      FROM  MWH_MAIN MWH
+      INNER JOIN MWH_SHIFT SFT ON SFT.SHIFTID = MWH.SHIFTID
+      INNER JOIN MWH_USERS USR ON USR.USERID = MWH.ENGINEER
+      --INNER JOIN MWH_MST_USER_ROLES ROLES ON ROLES.USER_ID = MWH.ENGINEER 
+      
+      WHERE
+      ((i_MID is null)          or (i_MID ='')          or (MWH.MID = i_MID))   
+      AND ((i_SHIFTID is null)      or (i_SHIFTID ='')      or (MWH.SHIFTID = i_SHIFTID)) 
+      AND (
+          (FromDateFlag = 'Y' AND ((i_MDATE is null) or (i_MDATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') =  TO_DATE(i_MDATE,'DD/MON/YYYY'))) 
+          OR (FromDateFlag = 'N' AND (((i_MDATE is null) or (i_MDATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') >=  TO_DATE(i_MDATE,'DD/MON/YYYY'))
+                                 AND ((i_TODATE is null) or (i_TODATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') <= TO_DATE(i_TODATE,'DD/MON/YYYY')))))
+          )))
+     /* AND ((i_MDATE IS NULL OR  i_TODATE IS NULL) OR  (i_MDATE ='' OR i_TODATE='')
+      OR (TO_DATE(MWH.MDATE,'DD/MON/YYYY') >=  TO_DATE(i_MDATE,'DD/MON/YYYY')  
+      AND TO_DATE(MWH.MDATE,'DD/MON/YYYY') <= TO_DATE(i_TODATE,'DD/MON/YYYY')))*/
+      AND ((i_ENGINEER is null)     or (i_ENGINEER ='')     or (MWH.ENGINEER = i_ENGINEER)) 
+      AND ((i_ISSFTHNDOVER is null) or (i_ISSFTHNDOVER ='') or (MWH.ISSFTHNDOVER = i_ISSFTHNDOVER)) 
+      AND ((i_Text is null) or (i_Text ='') 
+      --OR ((trim(regexp_replace(lower(MWH.CAM_REPORTABLE_ISSUES),'[[:space:]]*','')) LIKE '%' || trim(regexp_replace(lower(i_Text),'[[:space:]]*','')) || '%') 
+      OR (MWH.MID IN (SELECT MID FROM MWH_TEMP_DESCRIPTION)
+      ) ) 
+      ORDER BY MWH.MID DESC)TBL LEFT OUTER JOIN (SELECT * FROM MWH_TEMP_DESCRIPTION) TBR ON TBL.MID=TBR.MID
+      ORDER BY TBL.MID DESC;
+     
+      Delete From MWH_TEMP_DESCRIPTION;
+     
+     ---For Export to excel
+     OPEN O_EXPORTTOEXCEL FOR
+     
+     
+    SELECT              
+            MWH.MID, 
+            TO_CHAR(MWH.MDATE, 'DD/MM/YYYY')   AS "DATE",
+            SFT.NAME AS "SHIFT",
+            USR.USERNAME AS "ENGINEER",
+            AC.AC,
+            CASE  
+            WHEN (TRIM(REGEXP_REPLACE(LOWER(SPECHNDITEM.DESCRIPTION),'[[:space:]]*',''))  LIKE '%' 
+            || TRIM(REGEXP_REPLACE(LOWER(i_Text),'[[:space:]]*','')) || '%') 
+            THEN SPECHNDITEM.DESCRIPTION
+            ELSE 
+            SPECHNDITEM.ACTION
+            END DESCRIPTION
+            FROM  MWH_MAIN MWH
+            INNER JOIN MWH_SHIFT SFT ON SFT.SHIFTID = MWH.SHIFTID
+            INNER JOIN MWH_USERS USR ON USR.USERID = MWH.ENGINEER
+            INNER JOIN   MWH_SPECHNDITEMS SPECHNDITEM ON MWH.MID = SPECHNDITEM.MID
+            INNER JOIN MWH_AC AC ON AC.ACID = SPECHNDITEM.AC 
+            WHERE
+            (
+            (i_MID is null)          or (i_MID ='')          or (MWH.MID = i_MID))   
+            AND ((i_SHIFTID is null)      or (i_SHIFTID ='')      or (MWH.SHIFTID = i_SHIFTID)) 
+            AND (
+                  (FromDateFlag = 'Y' AND ((i_MDATE is null) or (i_MDATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') =  TO_DATE(i_MDATE,'DD/MON/YYYY'))) 
+                  OR (FromDateFlag = 'N' AND (((i_MDATE is null) or (i_MDATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') >=  TO_DATE(i_MDATE,'DD/MON/YYYY'))
+                                 AND ((i_TODATE is null) or (i_TODATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') <= TO_DATE(i_TODATE,'DD/MON/YYYY')))))
+              )))
+            /*((i_MDATE IS NULL OR  i_TODATE IS NULL) OR  (i_MDATE ='' OR i_TODATE='')
+            OR (TO_DATE(MWH.MDATE,'DD/MON/YYYY') >=  TO_DATE(i_MDATE,'DD/MON/YYYY')  
+            AND TO_DATE(MWH.MDATE,'DD/MON/YYYY') <= TO_DATE(i_TODATE,'DD/MON/YYYY')))*/
+            AND ((i_ENGINEER is null)     or (i_ENGINEER ='')     or (MWH.ENGINEER = i_ENGINEER)) 
+            AND ((i_ISSFTHNDOVER is null) or (i_ISSFTHNDOVER ='') or (MWH.ISSFTHNDOVER = i_ISSFTHNDOVER)) 
+            AND ((i_Text is null) or (i_Text ='') 
+ 
+            OR  (trim(regexp_replace(lower(SPECHNDITEM.ACTION),'[[:space:]]*',''))  LIKE '%' || trim(regexp_replace(lower(i_Text),'[[:space:]]*','')) || '%' OR 
+            trim(regexp_replace(lower(SPECHNDITEM.DESCRIPTION),'[[:space:]]*',''))  LIKE '%' || trim(regexp_replace(lower(i_Text),'[[:space:]]*','')) || '%')
+            ) 
+
+               
+             
+            UNION ALL
+
+            SELECT              
+            MWH.MID, 
+            TO_CHAR(MWH.MDATE, 'DD/MM/YYYY')   AS "DATE",
+            SFT.NAME AS "SHIFT",
+            USR.USERNAME AS "ENGINEER",
+            '' AC,
+            MWH.CAM_REPORTABLE_ISSUES DESCRIPTION
+            FROM  MWH_MAIN MWH
+            INNER JOIN MWH_SHIFT SFT ON SFT.SHIFTID = MWH.SHIFTID
+            INNER JOIN MWH_USERS USR ON USR.USERID = MWH.ENGINEER
+            WHERE
+            ((i_MID is null)          or (i_MID ='')          or (MWH.MID = i_MID))   
+            AND ((i_SHIFTID is null)      or (i_SHIFTID ='')      or (MWH.SHIFTID = i_SHIFTID)) 
+            AND (
+                  (FromDateFlag = 'Y' AND ((i_MDATE is null) or (i_MDATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') =  TO_DATE(i_MDATE,'DD/MON/YYYY'))) 
+                  OR (FromDateFlag = 'N' AND (((i_MDATE is null) or (i_MDATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') >=  TO_DATE(i_MDATE,'DD/MON/YYYY'))
+                                 AND ((i_TODATE is null) or (i_TODATE ='') or (TO_DATE(MWH.MDATE,'DD/MON/YYYY') <= TO_DATE(i_TODATE,'DD/MON/YYYY')))))
+              )))
+            /*((i_MDATE IS NULL OR  i_TODATE IS NULL) OR  (i_MDATE ='' OR i_TODATE='')
+            OR (TO_DATE(MWH.MDATE,'DD/MON/YYYY') >=  TO_DATE(i_MDATE,'DD/MON/YYYY')  
+            AND TO_DATE(MWH.MDATE,'DD/MON/YYYY') <= TO_DATE(i_TODATE,'DD/MON/YYYY')))*/
+            AND ((i_ENGINEER is null)     or (i_ENGINEER ='')     or (MWH.ENGINEER = i_ENGINEER)) 
+            AND ((i_ISSFTHNDOVER is null) or (i_ISSFTHNDOVER ='') or (MWH.ISSFTHNDOVER = i_ISSFTHNDOVER)) 
+            AND ((i_Text is null) or (i_Text ='') 
+            OR ((trim(regexp_replace(lower(MWH.CAM_REPORTABLE_ISSUES),'[[:space:]]*','')) LIKE '%' || trim(regexp_replace(lower(i_Text),'[[:space:]]*','')) || '%') 
+      
+            ))
+            ORDER BY MID DESC;
+  
+   
+
+
+
+END;

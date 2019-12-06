@@ -1,0 +1,54 @@
+Incident- An incident is an unexpedted event that disrupts the normal operation of an Business.
+BAU-Business As Usual
+SOW-Software of Work
+SLA-
+P1/P2/P3/P4/P5->
+
+Response and Resolution, there are two to breach the SLA.
+We should provide the response in time and we should able to provide the resolution within time.
+Serviece Request:
+If you need additional  request/service from the provider.
+
+Business User
+User 
+Administration
+Roles based
+
+Service-network issue/authority issue/
+
+Incident- like some data mismatch/some thing which inturrept the business process.
+If any software installation is rquired then manager approval is required.
+
+Most business Critical Incident-MBCI
+
+L1- they will try to fix from there side like account lock,LAN not working
+L2- if L1 not able to fix some of the issue they will call the other team to fix.
+L3- Code change/Backup and Recovery snf production deployment plan.
+
+Can we convert the ticket priority in between if it raise for P4 and later i want to change to P2.
+Only with the proper justification and approval from the management or business approval.
+-----------------------------------------------------------------------------------------
+Problem Management
+------------------
+if it is recurring again again then we can raise a problem management.
+based on the 
+Minor Release- changes to fix the previous release issues.
+Major Release- New features if we are adding to the product.
+Change Management- Many fixing and release can included into the change management.
+
+PT-
+PNL
+SOW
+PMO
+SDM
+CM-Continution Margine
+Resouce Cutting
+Pyramid Cutting
+
+
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+IAM:-
+
+IAM allows you to manage users and their level of access to the AWS console.
+IAM offers the following features-
+Centralised control of your AWS account.
+Shared Assess to you AWS account
+Granular permissions
+Identity federation
+Multifactor Authentication
+PRovide temporary access for users/devices and services where necesary
+Allow you to set up your own password rotation policy
+Integrated with many different AWS services
+Support PCI DSS compliance
+
+Key terminology for IAM
+Users
+Groups
+Policies
+Roles

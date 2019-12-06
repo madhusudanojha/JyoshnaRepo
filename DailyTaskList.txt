@@ -1,0 +1,414 @@
+30/06/2019
+Kevin/Pankaj
+EMN not producing .doc reports 
+#69956
+Madhusudan
+
+
+01/07/2019
+-----------
+Kathrine Pagsisihan
+ANZ Inactive user for the month ending_ 30/Jun/19 
+#69960
+Asked for latest Query 
+Priyanka Goyal
+
+
+Jefry Yikwa 
+H141 PRODUCTION PLANNING HANDOVER - ACCESS 
+#69968
+Asked for user credential
+Madhusudan
+
+Joseph Samuel 
+NTL base task hours not reflecting in EMN
+Priyanka
+
+02/07/2019
+----------
+Kathrine Pagsisihan
+ANZ Inactive user for the month ending_ 30/Jun/19 
+#69960
+Asked for query update & new email id addition in distribution list
+Jyoshna
+
+Kathrine Pagsisihan
+Automated Report -Orders created not in Interface Audit JANZ and JJP 02/07/19
+#63950
+Asked for query update
+Ram Mohan
+
+
+Jefry Yikwa 
+EMN Defects Missing. 02/07/19 
+#70112
+Defects have just disappeared from the AUTO EMN but nothing has been changed in TRAX  and they are all still allocated for tonight’s work.
+Nishant
+Sent Clarification to ELvie
+
+Rexa P Golez
+Daily CDC Issuances report_ 02/Jul/19
+Asked for query behind the CDC Issuance report.
+Madhusudan
+
+Munish Thakur 
+Qualys scanning of Delay Report requires the captcha to be Disabled 02/07/2019
+Disabling capitcha from the UAT application for time being as requested.
+
+------------------------------------
+03-July-2019
+Elvie P
+Daily B787 24HRS MW Alert Report Summary as on_ 02/May/19 #68075
+Moved to production on 3 july
+Priyanka
+
+Jefry Yikwa
+Query for Daily B787 24HRS MW Alert Report Summary as on 3 july #70159
+-Some logic change request 
+Josh
+Sample report send to Siddhi
+
+MRO Changes in Register - Issue with Automated emails #66520 
+
+Elvie
+Auto Requisition Updater Amendment
+#70182
+View and Store procedure need to update
+
+------------------------------------
+04-July-2019
+------------------------------------
+Shona,Brain Hunter
+MRO Production Move
+#66520
+
+Siddhi Eknath Ayare 
+Query for Daily B787 24HRS MW Alert Report Summary 
+New query need to update  
+#70159
+
+05-July-2019
+------------------------------------
+Siddhi Eknath Ayare 
+Query for Daily B787 24HRS MW Alert Report Summary 
+Need to udpate the query and send the sample report
+#70159 
+
+Elvie P
+Daily CDC issuance Report amendment request
+Query need to update and sample need to update
+#70316 
+Rammohan
+
+08-July-19
+--------------------------------------
+Elvie P
+Daily CDC issuance Report amendment request #70316
+Production move for the report
+#70316
+
+09-July-19
+--------------------------------------
+Kevin
+EMN Defects are repeating
+Store procedure need to be change and check
+#70482
+-------------------------------------
+10-July-19
+Elvie 
+New Traxdoc Compliance Report as on 23/Jun/19 
+#69794
+--------------------------------------
+11-July-19
+Elvie
+B787 Fleet Health Tracking Report query request 
+#70579
+
+Siddhi Eknath Ayare 
+Query for Daily B787 24HRS MW Alert Report Summary 
+Again new query they have provided
+#70159 
+---------------------------------------
+12-July-19
+Siddhi Eknath Ayare 
+Query for Daily B787 24HRS MW Alert Report Summary  
+Moved to Production
+#70159
+
+Elvie P
+Task cards duplicating in deferral database
+Some of the Deferral records are duplicating in the Deferral Advisory tab.
+#69876
+
+Steps would be 10 hour total effort
+Analysis-4 hours
+coding-4 hours
+system testing 1 hours
+last step release to UAT 1 hour
+
+----------------------------
+15-July-19
+
+Kathrine Pagsisihan
+New Report Request -Terminated EC If Terminated
+#70622
+Steps would be 8 hour total effort
+Analysis-2 hours
+coding-4 hours
+system testing 1 hours
+last step release to UAT 1 hour
+----------------------------
+16-July-19
+Kathrine Pagsisihan
+Report automation request for Honeywell Connected Aircraft trial
+Send the Clarification for the request.
+#70597
+Steps would be 6 hour total effort
+Analysis-4 hours
+others-2 hours
+
+----------------------------
+17-July-19
+Scott Weaver 
+Unable to add training column in MRO register
+
+Steps would be 8 hour total effort
+Analysis-2 hours
+coding-4 hours
+system testing 1 hours
+last step release to UAT 1 hour
+#70670
+------------------------------------
+26-07-2019
+Elvie P
+Automated Report Request 
+#70731
+Jyoshna
+
+Siddhi Eknath Ayare 
+Query for Daily RI Transactions  
+#70981
+Priyanka
+----------------------------------------------------------------------------------------------------------------------
+29-07-2019
+No Request
+-----------------------------------------------------------------------------------------------------------------------
+30-07-2019
+
+Kathrine Pagsisihan
+PN Issuance Notification report email 
+#69593
+Ram Mohan
+
+------------------------------------------------------------------------------------------------------------------------
+16-08-2019
+AKLENG EDRS Locked
+Pankaj Nanda
+
+
+Report automation request for Honeywell Connected Aircraft trial #71793
+Jyoshna
+Kathrine
+
+19-08-2019
+INC0708947 - 'Dundas Dashboard ENGDASH' suffered a fatal communication error with WAS
+Goyal Priyanka
+
+20-08-2019
+ H141 Planners Handover #71924
+Jyoshna
+Elvie
+
+21-08-2019
+Request for Report that collates MOU Hours from AutoEMN.  #71398
+Elvie
+Jyoshna/Priyanka
+
+22-08-2019
+FOR ACTION: Change#CHG0474166- Cipher Suite Upgrade on Akamai Certificates
+Pankaj Nanda
+Priyanka
+
+Production planning handover access  #71961
+Elvie
+Jyoshna
+-----------------------------------------------------------------------30-08-2019----------------------------------------------------------------------
+ Add Ports to Handover - Daily Fleet Health Page #72113
+
+ EDRS Connection Not Working #72177
+
+Change request - Auto EMN. #72182/#72202 
+
+POP UP for MEL 29-09-09 #72188-Jefry Yikwa 
+-----------------------------------------
+
+Request for automated Report - jops#72170 Rama Mohan done
+
+Task Card Created Post WO Print-Hangar as on 26/Aug/19 14:45 #72073
+
+POP UP for MEL 29-09-09 #72188- Productionmove-done
+
+Task Card Created Post WO Print-Hangar 03-09-19 14:45 #72073- Moved to production-Jyoshna-03-09-19
+
+Auto Report Required - urgent #72208 03-09-19- Elvie- RamaMohan -Prod move done
+Line Maintenance Planning INc0722867- Server  slowness -IT issues  #72275 -Wayne Vanderwert 03-09-19
+-----------------------------------------------------------------------------------
+
+Request for Report that collates MOU Hours from AutoEMN.  #71398 -Priyanka -Jyoshna -03-09-19
+Request for Report that collates MOU Hours from AutoEMN.  #71398- Review RA Document
+
+Effectivity Monthly Report query #72320 -RamaMohan-
+Automated Report Request-Exchange Batch Merge Required-05-09-19  #72343 Elvie P -prod move done on 9th sep.
+---------------------------------------------
+
+September 6, 2019 6:33 -Task Card Created Post WO Print-Hangar as on 26/Aug/19 14:45 #72073
+
+DELAY REPORT ACCESS (611301)_PLS UNLOCK #72372 -Jefry Yikwa 
+Task Card Created Post WO Print-Hangar as on 26/Aug/19 14:45 #72073 -07-09-19
+
+-----------------------------------
+AD parts controls - actions #72357
+AD Positional Parts Issuance Alert Report
+Kathrine Pagsisihan -> 10-09-19
+RamaMohan 
+
+-----------------------------------
+Flight control Alert Report #72432
+Kathrine Pagsisihan
+10 September 2019 10:37
+RamaMohan 
+
+-----------------------------------
+ MRO Certifying and Training Register #72526
+Mara Pedro
+11-09-19
+
+Requirement for NAA "Out of Base" page. #72525
+11-09-19
+Mark Quinn
+
+12-09-19
+Deferral database issue #72536
+Priyanka Goyal
+
+Elvie P
+ Expiring NLA Shelf Life report#72405
+Jyoshna Kayam
+----------------------------------------------------done till here---------------------------------------------------------))))))((((())))------
+17-09-2019
+Date Controlled PN Control without Schedule Date  #72630
+Jyoshna Kayam
+Rexa P Golez
+
+16-09-2019
+Request for Report that collates MOU Hours from AutoEMN.  #71398
+Mark quinn
+Jyoshna kayam-Sent to UAT
+
+Adding some software on the server-
+
+17-09-19
+----------------------------------------------------------------------------
+
+
+RE: PER-NAA AUTO EMN GREMLINS  #72642
+#72642
+
+RE: Requirement for NAA "Out of Base" page. #72525
+Nishant- SEnt to UAT on 17-09
+Mark Quinn
+
+UAT complete on 18-09-19 Mark quinn
+
+Prod completed on 19-09-19 -Nishant kumar singh
+------------------------------------------------------
+
+
+ ESS Report - EC/TC added to open WO post-final EMN #72224
+18-09-19
+Automated Report Request  #72768
+ Automated Report Request -License Expiring in 5 days and Less
+Rama mohan -License Expiring in 5 days and Less 
+3 reports need to create.
+
+threee reports Moved to production on 19-09-19.
+
+19-09-19
+Moved to production
+Uncommanded flight control movement/input - Alert notification from TRAX #72432
+
+UAT Completed
+Request for Report that collates MOU Hours from AutoEMN.  #71398
+
+
+ESS Report - EC/TC added to open WO post-final EMN #72224
+
+
+------------------------------------------------
+26-09-19
+
+Automated Report Request  #72768
+Ramamohan
+Robert Jeffers
+
+
+MAINTWATCH SHIFT HANDOVER #72853
+Paul Burgess 
+
+Last Compressor Wash Dates for Jetstar Asia Engines 25/Aug/19 #73068 
+Jefry Yikwa 
+
+Trax Production DB Health #73069
+Kathrine Pagsisihan
+
+-----------------------------------------------------
+25-09-19
+Alert emails - revisions required #59031 
+priyanka
+Kathrine Pagsisihan
+
+Issues with daily reports is #73034
+Jefry Yikwa 
+Jyoshna
+
+Due E/C’s Not Planned 23/Sep/19 #72858
+jyoshna
+query required-23-09-kathrine
+
+
+AUTO EMN SLOW TO SAVE / REFRESH #73043
+ESS Group /Jefry Yikwa 
+MAdhusudan 
+
+MAINTWATCH SHIFT HANDOVER #72853
+Jefry Yikwa MAdhusudan
+
+24-09-12
+Elvie
+Weekly AC Tasks Completed report 
+kayam
+•	Weekly A/C Tasks Completed 23/SEP/19
+•	Daily W&B Deferred/Closed Task Report 23/Sep/19
+•	Reweigh Open Work Orders report as on 23/Sep/19
+
+
+
+MW Diary #72862 Kathrine Pagsisihan
+
+21-09-19 priyanka
+
+EMN Not loading reports 
+#72834 Kevin Clarke
+
+Requirement for NAA "Out of Base" page. #72525 20-09-19
+
+Uncommanded flight control movement/input - Alert notification from TRAX #72432
+jyoshna
+Kathrine Pagsisihan
+
+
+Request for Report that collates MOU Hours from AutoEMN.  #71398 mark quinn
+jyoshna
+
+Network communication between MELDC1TRX01 and MELDC1EMG05 
+

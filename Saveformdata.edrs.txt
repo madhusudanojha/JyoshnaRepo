@@ -1,0 +1,421 @@
+create or replace PROCEDURE       "DR_SAVEFORMDATA" 
+/************************************************************************************************************
+Author         : Arun Kumar 
+Company        : IGate.
+Description    : To Insert the Details of Delay form.
+Created Date   : 
+
+UpdateID    Updated By    Updated Date     Updated Reason  
+1.          V.Kishore     22-DEC-2010      Implemented CodingStandards
+************************************************************************************************************/
+(  
+  i_RepID IN VARCHAR2,
+  i_DetailsXml IN CLOB,
+  i_GridXml IN CLOB,
+  o_ReportID OUT SYS_REFCURSOR
+)
+AS 
+TempRepID VARCHAR2(20);
+StatusCheck VARCHAR2(20);
+DispatchID VARCHAR2(20);
+DisCount NUMBER;
+DetailsXml XMLTYPE;
+GridXml XMLTYPE;
+BEGIN 
+   DetailsXml := XMLTYPE(i_DetailsXml);
+   GridXml := XMLTYPE(i_GridXml);
+   FOR i IN
+  (
+         SELECT 
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/AC/text()').getstringval() AS AC,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/SwapAC/text()').getstringval() AS SwapAC,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/Swap/text()').getstringval () AS Swap,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/FlightNo/text()').getstringval() AS FlightNo,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/FltDsgntr/text()').getstringval() AS FltDsgntr,                     
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/Check/text()').getstringval() AS Chk,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/ThisStn/text()').getstringval () AS ThisStn,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/NextStn/text()').getstringval () AS NextStn,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/FlightDate/text()').getstringval () AS FlightDate,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/STD/text()').getstringval () AS STD, 
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/STDDATEUTC/text()').getstringval () AS STDDATEUTC,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/STDTIMEUTC/text()').getstringval () AS STDTIMEUTC,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/ATD/text()').getstringval () AS ATD,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/ATDDATEUTC/text()').getstringval () AS ATDDATEUTC,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/ATDTIMEUTC/text()').getstringval () AS ATDTIMEUTC,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/ATDDATE/text()').getstringval () AS ATDDATE, 
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/TechLog/text()').getstringval ()) AS TechLog,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/MEL/text()').getstringval ()) AS MEL,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/MELNo/text()').getstringval ()) AS MELNo,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/RAS/text()').getstringval ()) AS RAS,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/RASNo/text()').getstringval ()) AS RASNo,           
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/PN/text()').getstringval()) AS PN,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/PNNo/text()').getstringval ()) AS PNNo,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/SNNo/text()').getstringval ()) AS SNNo,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/FINNo/text()').getstringval ()) AS FINNo,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/Oscar/text()').getstringval ()) AS Oscar,          
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/OscarNo/text()').getstringval ()) AS OscarNo,           
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/PrimCauDelay/text()').getstringval () AS PrimCauDelay,
+                     XMLTYPE.EXTRACT (VALUE (A),'/Details/PrimDelayCode/text()').GETSTRINGVAL () AS PRIMDELAYCODE,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/SecCauDelay/text()').getstringval () AS SecCauDelay,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/SecDelayCode/text()').getstringval () AS SecDelayCode,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/SecDelayCodeOthers/text()').getstringval ()) AS SDCOthers,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/PrimDelayAllocation/text()').getstringval () AS PrimDelayAllocation,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/SecDelayAllocation/text()').getstringval () AS SecDelayAllocation,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/TOTALDELAY/text()').getstringval () AS TotalDelay,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/AtaMain/text()').getstringval () AS AtaMain,           
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/AtaSub/text()').getstringval () AS AtaSub,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/FirstFlight/text()').getstringval () AS FirstFlight,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/RejTakeOff/text()').getstringval () AS RejTakeOff,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/BirdStrike/text()').getstringval () AS BirdStrike,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/RetToBlocks/text()').getstringval () AS RetToBlocks,           
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/EngineIFS/text()').getstringval() AS EngineIFS,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/DamageInFlight/text()').getstringval () AS DamageInFlight,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/AirReturn/text()').getstringval () AS AirReturn,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/EtopsItem/text()').getstringval () AS EtopsItem,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/DamageOnGround/text()').getstringval () AS DamageOnGround,          
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/FlightDiversion/text()').getstringval () AS FlightDiversion,           
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/PotMajDefect/text()').getstringval () AS PotMajDefect,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/Cancelled/text()').getstringval () AS Cancelled,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/SdrReportEvents/text()').getstringval () AS SdrReportEvents,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/NoneofThese/text()').getstringval () AS NoneofThese,                   
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/ResponseReq/text()').getstringval () AS ResponseReq,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/AbnormalStop/text()').getstringval () AS AbnormalStop,                   
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/EmergencyDecl/text()').getstringval () AS EmergencyDecl,
+                    utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/FollowUpAction/text()').getclobval ()) AS FollowUpAction,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/SumittedBy/text()').getstringval () AS SumittedBy,
+                     --XMLTYPE.EXTRACT (VALUE (a),'/Details/LicenceNo/text()').getstringval () AS LicenceNo,           
+                        utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/LicenceNo/text()').getclobval ()) AS LicenceNo,
+                     utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Details/EmailID/text()').getstringval ()) AS EmailID,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/Status/text()').getstringval () AS Status,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/LoginID/text()').getstringval () AS LoginID,                     
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/LackOfManPower/text()').getstringval () AS LackOfManPower,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/NilSpares/text()').getstringval () AS NilSpares,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/NilTooling/text()').getstringval () AS NilTooling,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/LackOfCoverage/text()').getstringval () AS LackOfCoverage,           
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/NonMannedPort/text()').getstringval () AS NonMannedPort,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/Consequential/text()').getstringval () AS Consequential,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/Category/text()').getstringval () AS Catgory,
+                     XMLTYPE.EXTRACT (VALUE (a),'/Details/DLS/text()').getstringval () AS DLS,
+                     UTL_I18N.UNESCAPE_REFERENCE(XMLTYPE.EXTRACT (VALUE (A),'/Details/Summary/text()').GETCLOBVAL ()) AS SUMMARY,
+                     UTL_I18N.UNESCAPE_REFERENCE(XMLTYPE.EXTRACT (VALUE (A),'/Details/FollowUpRemarks/text()').GETCLOBVAL ()) AS FOLLOWUPREMARKS,
+                     XMLTYPE.EXTRACT (VALUE (A),'/Details/DELAYCODETYPE/text()').GETSTRINGVAL () AS DELAYCODETYPE,
+                     XMLTYPE.EXTRACT (VALUE (A),'/Details/DELAYCODE2DID/text()').GETSTRINGVAL () AS DELAYCODE2DID
+                    
+              FROM TABLE (XMLSEQUENCE (DetailsXml.EXTRACT('/DelayReport/Details'))) a 
+  )
+  LOOP
+      IF(i_RepID IS NULL) THEN     
+        SELECT DR_MAIN_SEQ.NEXTVAL INTO TempRepID FROM DUAL;
+        SELECT COUNT(*) INTO DisCount FROM DR_DISPATCH WHERE TO_CHAR(DISPATCHDATE,'DD/MM/YYYY') = TO_CHAR(SYSDATE,'DD/MM/YYYY');
+        IF(DisCount>0) THEN
+          SELECT DISPATCHID INTO DispatchID FROM DR_DISPATCH WHERE TO_CHAR(DISPATCHDATE,'DD/MM/YYYY') = TO_CHAR(SYSDATE,'DD/MM/YYYY');
+        ELSE
+          SELECT NULL INTO DispatchID FROM DUAL;
+        END IF;
+        INSERT INTO DR_MAIN
+        (
+              DELAYREPORTID, 
+              MODIFIEDDATE,
+              MODIFIEDBY,
+              ADMINUPDATED,
+              AC, 
+              SWAPAC,
+              SWAP ,
+              FLIGHTNUMBER,
+              CHK,
+              THISSTN,
+              NEXTSTN,
+              FLIGHTDATE,
+              STD,
+              STDDATEUTC,
+              STDTIMEUTC,
+              ATD,
+              ATDDATEUTC,
+              ATDTIMEUTC,
+              ATDDATE,
+              TECHLOGNO,        
+              MEL,
+              MELNO,
+              RASEA,
+              RASEANO,
+              PN,
+              PNNO,
+              SNNO,
+              FINNO,
+              OSCAR,
+              OSCARNO,
+              PRIMDELAYCAUSE,
+              PRIMDELAYCODE,
+              SECDELAYCAUSE,
+              SECDELAYCODE,
+              SDCOTHERS,
+              PRIMARYDELAYALLOCATION,
+              SECONDARYDELAYALLOCATION,
+              TOTALDELAY,
+              ATANOMAIN,
+              ATANOSUB,
+              FIRSTFLIGHT,
+              REJECTEDTAKEOFF,
+              BIRDSTRIKE,
+              RETURNTOBLOCKS,
+              ENGINEIFS,
+              DAMAGEINFLIGHT,
+              AIRRETURN,
+              ETOPSITEM,
+              DAMAGEONGROUND,
+              FLIGHTDIVERSION,
+              POTENMAJORDEFECT,
+              CANCELLED,
+              SDRREPORTABLEEVENTS,
+              NONEOFTHESE,
+              RESPONSEREQ,
+              FOLLOWUPACTION,  
+              SUBMITTEDBY,
+              LICENCENO,
+              EMAILID,
+              STATUS,
+              DISPATCHID,
+              CREATEDBY,
+              ADMINLACKOFMP,
+              ADMINNILSPARES,
+              ADMINNILTOOLING,
+              ADMINLACKOFCOV,
+              ADMINNONMP,
+              ADMINCONSEQ,
+              ADMINCATEGORY,
+              DLS,
+              DELAYSUMMARY,
+              REPORTID, 
+              FOLLOWUPREMARKS,
+              FLIGHTDESIGNATOR,
+              DELAYCODETYPE,
+              DELAYCODE2DID,
+              ABNORMALSTOP,
+              EMERGENCYDECL
+        )
+        VALUES
+        (
+               TempRepID,
+               sysdate,
+               i.SumittedBy,
+               'N',
+               i.AC,
+               i.SwapAC,
+               i.Swap,
+               i.FlightNo,
+               i.Chk,
+               i.ThisStn,
+               i.NextStn,               
+               TO_DATE(i.FlightDate,'DD/MM/YYYY'),
+               i.STD,  
+               --TO_DATE(i.STDDATEUTC,'MM/DD/YYYY'),
+               --i.STDTIMEUTC,
+               CALCUTCDATE(TO_DATE(i.FlightDate,'MM/DD/YYYY'),i.STD,i.ThisStn,i.DLS),
+               CALCUTCTIME(TO_DATE(i.FlightDate,'MM/DD/YYYY'),i.STD,i.ThisStn,i.DLS),
+               i.ATD, 
+               --TO_DATE(i.ATDDATEUTC,'MM/DD/YYYY'),
+               --i.ATDTIMEUTC,
+               CALCUTCDATE(TO_DATE(i.ATDDATE,'MM/DD/YYYY'),i.ATD,i.ThisStn,i.DLS),
+               CALCUTCTIME(TO_DATE(i.ATDDATE,'MM/DD/YYYY'),i.ATD,i.ThisStn,i.DLS),
+               TO_DATE(i.ATDDATE,'MM/DD/YYYY'),
+               i.TechLog,
+               i.MEL,
+               i.MELNo,
+               i.RAS,
+               i.RASNo,           
+               i.PN,
+               i.PNNo,
+               i.SNNo,
+               i.FINNo,
+               i.Oscar,          
+               i.OscarNo,           
+               i.PrimCauDelay,
+               i.PrimDelayCode,
+               i.SecCauDelay,
+               i.SecDelayCode,
+               i.SDCOthers,
+               DECODE(i.Cancelled, 'Y','',i.PrimDelayAllocation), 
+               i.SecDelayAllocation,
+               i.TotalDelay,
+               TRIM(i.AtaMain),           
+               TRIM(i.AtaSub),
+               i.FirstFlight,
+               i.RejTakeOff,
+               i.BirdStrike,
+               i.RetToBlocks,           
+               i.EngineIFS,
+               i.DamageInFlight,
+               i.AirReturn,
+               i.EtopsItem,
+               i.DamageOnGround,          
+               i.FlightDiversion,           
+               i.PotMajDefect,
+               i.Cancelled,
+               i.SdrReportEvents,
+               i.NoneofThese,
+               i.ResponseReq,
+               i.FollowUpAction,
+               i.SumittedBy,
+               i.LicenceNo,           
+               i.EmailID,
+               i.Status,
+               DispatchID,
+               i.LoginID,
+               i.LackOfManPower,
+               i.NilSpares,
+               i.NilTooling,
+               i.LackOfCoverage, 
+               i.NonMannedPort,
+               i.Consequential,
+               i.Catgory,
+               i.DLS,
+               i.Summary,
+               'RPT'||TempRepID,
+               I.FOLLOWUPREMARKS,
+               I.FLTDSGNTR,
+               I.DELAYCODETYPE,
+               i.DELAYCODE2DID,
+               i.AbnormalStop,
+               i.EmergencyDecl
+        );
+      ELSE
+      SELECT STATUS into StatusCheck FROM DR_MAIN WHERE  DELAYREPORTID=i_RepID;
+      IF StatusCheck <> 'Submitted'
+      THEN
+        UPDATE DR_MAIN SET           
+              MODIFIEDDATE = SYSDATE,
+              MODIFIEDBY = i.SumittedBy,              
+              AC = i.AC, 
+              SWAPAC=i.SwapAC,
+              SWAP=i.Swap,
+              FLIGHTNUMBER = i.FlightNo,
+              CHK = i.Chk,
+              THISSTN = i.ThisStn,
+              NEXTSTN = i.NextStn,
+              FLIGHTDATE = TO_DATE(i.FlightDate,'DD/MM/YYYY'),
+              STD = i.STD,
+              ATD = i.ATD,
+              ATDDATE=TO_DATE(i.ATDDATE,'MM/DD/YYYY'),
+              STDDATEUTC=CALCUTCDATE(TO_DATE(i.FlightDate,'MM/DD/YYYY'),i.STD,i.ThisStn,i.DLS),
+              STDTIMEUTC=CALCUTCTIME(TO_DATE(i.FlightDate,'MM/DD/YYYY'),i.STD,i.ThisStn,i.DLS),            
+              ATDDATEUTC= CALCUTCDATE(TO_DATE(i.ATDDATE,'MM/DD/YYYY'),i.ATD,i.ThisStn,i.DLS),
+              ATDTIMEUTC=CALCUTCTIME(TO_DATE(i.ATDDATE,'MM/DD/YYYY'),i.ATD,i.ThisStn,i.DLS),
+              TECHLOGNO = i.TechLog,        
+              MEL = i.MEL,
+              MELNO = i.MELNo,
+              RASEA = i.RAS,
+              RASEANO = i.RASNo,
+              PN = i.PN,
+              PNNO = i.PNNo,
+              SNNO = i.SNNo,
+              FINNO = i.FINNo,
+              OSCAR = i.Oscar,
+              OSCARNO = i.OscarNo,
+              PRIMDELAYCAUSE = i.PrimCauDelay,
+              PRIMDELAYCODE = i.PrimDelayCode,
+              TOTALDELAY = i.TotalDelay,
+              SECDELAYCAUSE = i.SecCauDelay,
+              SECDELAYCODE = i.SecDelayCode,
+              SDCOTHERS = i.SDCOthers,
+              PRIMARYDELAYALLOCATION=DECODE(i.Cancelled, 'Y','',i.PrimDelayAllocation),
+              SECONDARYDELAYALLOCATION=i.SecDelayAllocation,                           
+              ATANOMAIN = TRIM(i.AtaMain),
+              ATANOSUB = TRIM(i.AtaSub),
+              FIRSTFLIGHT = i.FirstFlight,
+              REJECTEDTAKEOFF = i.RejTakeOff,
+              BIRDSTRIKE = i.BirdStrike,
+              RETURNTOBLOCKS = i.RetToBlocks,
+              ENGINEIFS = i.EngineIFS,
+              DAMAGEINFLIGHT = i.DamageInFlight,
+              AIRRETURN = i.AirReturn,
+              ETOPSITEM = i.EtopsItem,
+              DAMAGEONGROUND = i.DamageOnGround,
+              FLIGHTDIVERSION = i.FlightDiversion,
+              POTENMAJORDEFECT = i.PotMajDefect,
+              CANCELLED = i.Cancelled,
+              SDRREPORTABLEEVENTS=i.SdrReportEvents,               
+              NONEOFTHESE=i.NoneofThese,              
+              RESPONSEREQ = i.ResponseReq,
+              FOLLOWUPACTION = i.FollowUpAction,  
+              SUBMITTEDBY = i.SumittedBy,
+              LICENCENO = i.LicenceNo,
+              EMAILID = i.EmailID,              
+              STATUS = DECODE(STATUS,'Submitted', 'Submitted',i.Status),
+              ADMINLACKOFMP=i.LackOfManPower,
+              ADMINNILSPARES=i.NilSpares,
+              ADMINNILTOOLING=i.NilTooling,
+              ADMINLACKOFCOV=i.LackOfCoverage,
+              ADMINNONMP=i.NonMannedPort,
+              ADMINCONSEQ=i.Consequential,
+              ADMINCATEGORY=i.Catgory,
+              DLS=i.DLS,
+              DELAYSUMMARY=i.Summary,
+              FOLLOWUPREMARKS = i.FollowUpRemarks,
+              FLIGHTDESIGNATOR = I.FLTDSGNTR,
+              DELAYCODETYPE = I.DELAYCODETYPE,
+              DELAYCODE2DID = i.DELAYCODE2DID,
+              ABNORMALSTOP=i.AbnormalStop,
+              EMERGENCYDECL=i.EmergencyDecl
+            WHERE 
+            DELAYREPORTID=i_RepID;
+      END IF; 
+      END IF;        
+  END LOOP;
+           
+   IF(i_RepID IS NOT NULL) THEN
+    DELETE FROM DR_ACTION WHERE DELAYREPORTID=i_RepID; 
+   END IF;
+     
+   FOR i IN
+  (
+         SELECT 
+           XMLTYPE.EXTRACT (VALUE (a),'/Row/TimeLocal/text()').getstringval() AS TimeLocal,
+           utl_i18n.unescape_reference(XMLTYPE.EXTRACT (VALUE (a),'/Row/Action/text()').getstringval()) AS Action           
+        FROM 
+          TABLE (XMLSEQUENCE (GridXml.EXTRACT('/Rows/Row'))) a 
+  )
+  LOOP
+     IF(i_RepID IS NOT NULL) THEN     
+      INSERT INTO DR_ACTION
+        (
+          RECORDID,
+          DELAYREPORTID,
+          TIMELOCAL,
+          ACTION
+        )
+        VALUES
+        (
+          DR_ACTION_SEQ.NEXTVAL,
+          i_RepID,
+          i.TimeLocal,
+          i.Action
+        );    
+     ELSE
+      INSERT INTO DR_ACTION
+        (
+          RECORDID,
+          DELAYREPORTID,
+          TIMELOCAL,
+          ACTION
+        )
+        VALUES
+        (
+          DR_ACTION_SEQ.NEXTVAL,
+          TempRepID,
+          i.TimeLocal,
+          i.Action
+        );    
+     END IF;    
+        
+  END LOOP;
+  
+  IF(i_RepID IS NOT NULL) THEN
+    SELECT i_RepID INTO temprepid FROM DUAL;    
+  END IF;
+  
+  OPEN o_ReportID FOR
+    SELECT
+      temprepid AS REPORTID
+    FROM 
+      DUAL;
+END;
