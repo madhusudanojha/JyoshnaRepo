@@ -1,0 +1,16 @@
+REST and SOAP
+---------------
+Web Services is a way of communication using which two different machine can interact over a network.
+
+Mainly two types of web services-
+SOAP & REST
+--------------
+SOAP stands for Simple Object Access Protocol where REST stands for Represenetational State Transfer.
+SOAP is an XML based message protocol where Rest is an architectural style protocol.
+SOAP only supports XML where REST supports different format like HTML, JSON,Text,XML etc.
+SOAP message consists of an envelope which includes SOAP headers and body to store the actual information which we want to send Where as REST uses HTTP built in headers with variety if media types to carry meta data information.
+SOAP defines standard which needs to be regorously followed where REST does not define too much standards.
+SOAP can't use rest because it's a protocol where as  REST can use SOAP webservices because its a concept and can use any protocol.
+SOAP uses WSDL for communication between consumer and provider where as REST uses XML or JSON to send /Recieve data.
+SOAP does not return result in human editable format where as REST result is readable in plain JSON or XML format.
+SOAP performance is not great hence less preffered where as REST performance is much better compare to SOAP.
